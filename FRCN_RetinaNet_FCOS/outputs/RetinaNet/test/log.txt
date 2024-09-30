@@ -1,0 +1,37 @@
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+| distributed init (rank 1): env://
+| distributed init (rank 0): env://
+Namespace(data_path='/media/data/coco', weights_path=None, dataset='coco', model='my_retinanet_resnet50_fpn', device='cuda', batch_size=2, epochs=26, workers=4, opt='sgd', lr=0.02, momentum=0.9, weight_decay=0.0001, norm_weight_decay=None, lr_scheduler='multisteplr', lr_step_size=8, lr_steps=[16, 22], lr_gamma=0.1, print_freq=20, output_dir='./outputs/RetinaNet/test', resume='/home/hslee/Desktop/Backbone-Neck_Self-Distillation/FRCN_RetinaNet_FCOS/outputs/RetinaNet/s3c_s4g_s5o/checkpoint.pth', start_epoch=0, aspect_ratio_group_factor=3, rpn_score_thresh=None, trainable_backbone_layers=None, data_augmentation='hflip', sync_bn=False, test_only=False, use_deterministic_algorithms=False, world_size=2, dist_url='env://', weights=None, weights_backbone=None, amp=False, use_copypaste=False, backend='pil', use_v2=False, rank=0, gpu=0, distributed=True, dist_backend='nccl')
+Loading data
+root:  /media/data/coco
+img_folder:  train2017
+loading annotations into memory...
+Done (t=11.60s)
+creating index...
+index created!
+root:  /media/data/coco
+img_folder:  val2017
+loading annotations into memory...
+Done (t=0.37s)
+creating index...
+index created!
+Creating data loaders
+Using [0, 0.5, 0.6299605249474365, 0.7937005259840997, 1.0, 1.259921049894873, 1.5874010519681991, 2.0, inf] as bins for aspect ratio quantization
+Count of instances per bin: [  104   982 24236  2332  8225 74466  5763  1158]
+Creating model
+return_layers: {'layer2': '0', 'layer3': '1', 'layer4': '2'}
+extra_blocks: LastLevelP6P7(
+  (p6): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+  (p7): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+)
+return_layers: {'layer2': '0', 'layer3': '1', 'layer4': '2'}
+extra_blocks: LastLevelP6P7(
+  (p6): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+  (p7): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+)
+Start training
+Epoch: [1]  [    0/29316]  eta: 13:06:15  lr: 0.005000  loss: 3.4558 (3.4558)  bbox_regression: 0.4313 (0.4313)  classification: 3.0246 (3.0246)  time: 1.6092  data: 0.3896  max mem: 10800
+Epoch: [1]  [   20/29316]  eta: 3:04:04  lr: 0.005000  loss: 1.4778 (1.6614)  bbox_regression: 0.4855 (0.4933)  classification: 0.9527 (1.1681)  time: 0.3154  data: 0.0053  max mem: 11327
