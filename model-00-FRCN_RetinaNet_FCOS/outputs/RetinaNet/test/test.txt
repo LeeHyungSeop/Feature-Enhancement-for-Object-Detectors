@@ -1,0 +1,53 @@
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+| distributed init (rank 0): env://
+| distributed init (rank 1): env://
+Namespace(data_path='/media/data/coco', weights_path=None, dataset='coco', model='my_retinanet_resnet50_fpn', device='cuda', batch_size=2, epochs=26, workers=4, opt='sgd', lr=0.005, momentum=0.9, weight_decay=0.0001, norm_weight_decay=None, lr_scheduler='multisteplr', lr_step_size=8, lr_steps=[16, 22], lr_gamma=0.1, print_freq=20, output_dir='./outputs/RetinaNet/test', resume='', start_epoch=0, aspect_ratio_group_factor=3, rpn_score_thresh=None, trainable_backbone_layers=None, data_augmentation='hflip', sync_bn=False, test_only=False, use_deterministic_algorithms=False, world_size=2, dist_url='env://', weights=None, weights_backbone='ResNet50_Weights.IMAGENET1K_V1', amp=False, use_copypaste=False, backend='pil', use_v2=False, rank=0, gpu=0, distributed=True, dist_backend='nccl')
+Loading data
+root:  /media/data/coco
+img_folder:  train2017
+loading annotations into memory...
+Done (t=11.56s)
+creating index...
+index created!
+root:  /media/data/coco
+img_folder:  val2017
+loading annotations into memory...
+Done (t=0.36s)
+creating index...
+index created!
+Creating data loaders
+/home/hslee/Desktop/Backbone-Neck_Self-Distillation/FRCN_RetinaNet_FCOS/models/_utils.py:246: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=ResNet50_Weights.IMAGENET1K_V1`. You can also use `weights=ResNet50_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Using [0, 0.5, 0.6299605249474365, 0.7937005259840997, 1.0, 1.259921049894873, 1.5874010519681991, 2.0, inf] as bins for aspect ratio quantization
+Count of instances per bin: [  104   982 24236  2332  8225 74466  5763  1158]
+Creating model
+/home/hslee/Desktop/Backbone-Neck_Self-Distillation/FRCN_RetinaNet_FCOS/models/_utils.py:246: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=ResNet50_Weights.IMAGENET1K_V1`. You can also use `weights=ResNet50_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+return_layers: {'layer2': '0', 'layer3': '1', 'layer4': '2'}
+extra_blocks: LastLevelP6P7(
+  (p6): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+  (p7): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+)
+Loading weights from ResNet50_Weights.IMAGENET1K_V1
+return_layers: {'layer2': '0', 'layer3': '1', 'layer4': '2'}
+extra_blocks: LastLevelP6P7(
+  (p6): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+  (p7): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+)
+Start training
+Epoch: [0]  [    0/29316]  eta: 12:03:01  lr: 0.000010  loss: 2.1377 (2.1377)  bbox_regression: 0.7177 (0.7177)  classification: 1.4199 (1.4199)  time: 1.4798  data: 0.3370  max mem: 4473
+Epoch: [0]  [   20/29316]  eta: 2:37:10  lr: 0.000110  loss: 2.0178 (2.0637)  bbox_regression: 0.7090 (0.7429)  classification: 1.2953 (1.3208)  time: 0.2640  data: 0.0055  max mem: 4987
+Epoch: [0]  [   40/29316]  eta: 2:24:12  lr: 0.000210  loss: 1.9631 (2.0326)  bbox_regression: 0.6843 (0.7186)  classification: 1.2777 (1.3141)  time: 0.2679  data: 0.0048  max mem: 5184
+Epoch: [0]  [   60/29316]  eta: 2:19:31  lr: 0.000310  loss: 1.9742 (2.0325)  bbox_regression: 0.6865 (0.7311)  classification: 1.2615 (1.3013)  time: 0.2669  data: 0.0054  max mem: 5184
+Epoch: [0]  [   80/29316]  eta: 2:16:31  lr: 0.000410  loss: 1.9453 (2.0179)  bbox_regression: 0.6851 (0.7229)  classification: 1.2398 (1.2951)  time: 0.2620  data: 0.0049  max mem: 5184
+Epoch: [0]  [  100/29316]  eta: 2:14:38  lr: 0.000509  loss: 1.9703 (2.0159)  bbox_regression: 0.6946 (0.7269)  classification: 1.2667 (1.2890)  time: 0.2616  data: 0.0045  max mem: 5184
+Epoch: [0]  [  120/29316]  eta: 2:13:41  lr: 0.000609  loss: 1.9748 (2.0177)  bbox_regression: 0.6902 (0.7318)  classification: 1.2386 (1.2858)  time: 0.2659  data: 0.0045  max mem: 5184
+Epoch: [0]  [  140/29316]  eta: 2:12:56  lr: 0.000709  loss: 1.9447 (2.0138)  bbox_regression: 0.6659 (0.7256)  classification: 1.2635 (1.2882)  time: 0.2651  data: 0.0046  max mem: 5184
+Epoch: [0]  [  160/29316]  eta: 2:12:30  lr: 0.000809  loss: 1.9355 (2.0080)  bbox_regression: 0.6693 (0.7213)  classification: 1.2602 (1.2867)  time: 0.2678  data: 0.0046  max mem: 5184
+Epoch: [0]  [  180/29316]  eta: 2:11:40  lr: 0.000909  loss: 1.9364 (2.0056)  bbox_regression: 0.6702 (0.7170)  classification: 1.2586 (1.2886)  time: 0.2587  data: 0.0045  max mem: 5184
+Epoch: [0]  [  200/29316]  eta: 2:11:08  lr: 0.001009  loss: 1.9522 (1.9998)  bbox_regression: 0.6591 (0.7129)  classification: 1.2456 (1.2869)  time: 0.2623  data: 0.0043  max mem: 5184
+Epoch: [0]  [  220/29316]  eta: 2:10:42  lr: 0.001109  loss: 1.8974 (1.9934)  bbox_regression: 0.6786 (0.7109)  classification: 1.2220 (1.2826)  time: 0.2624  data: 0.0048  max mem: 5184
+Epoch: [0]  [  240/29316]  eta: 2:10:10  lr: 0.001209  loss: 1.9391 (1.9903)  bbox_regression: 0.6920 (0.7117)  classification: 1.2471 (1.2787)  time: 0.2585  data: 0.0050  max mem: 5184

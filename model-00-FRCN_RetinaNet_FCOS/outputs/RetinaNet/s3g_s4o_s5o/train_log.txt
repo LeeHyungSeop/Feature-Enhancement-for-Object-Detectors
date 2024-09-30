@@ -1,0 +1,110 @@
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+| distributed init (rank 1): env://
+| distributed init (rank 0): env://
+Namespace(data_path='/media/data/coco', weights_path=None, dataset='coco', model='my_retinanet_resnet50_fpn', device='cuda', batch_size=2, epochs=26, workers=4, opt='sgd', lr=0.005, momentum=0.9, weight_decay=0.0001, norm_weight_decay=None, lr_scheduler='multisteplr', lr_step_size=8, lr_steps=[16, 22], lr_gamma=0.1, print_freq=20, output_dir='./outputs/RetinaNet/s3g_s4o_s5o', resume='', start_epoch=0, aspect_ratio_group_factor=3, rpn_score_thresh=None, trainable_backbone_layers=None, data_augmentation='hflip', sync_bn=False, test_only=False, use_deterministic_algorithms=False, world_size=2, dist_url='env://', weights=None, weights_backbone='ResNet50_Weights.IMAGENET1K_V1', amp=False, use_copypaste=False, backend='pil', use_v2=False, rank=0, gpu=0, distributed=True, dist_backend='nccl')
+Loading data
+root:  /media/data/coco
+img_folder:  train2017
+loading annotations into memory...
+Done (t=11.76s)
+creating index...
+index created!
+root:  /media/data/coco
+img_folder:  val2017
+loading annotations into memory...
+/home/hslee/Desktop/Backbone-Neck_Self-Distillation/FRCN_RetinaNet_FCOS/models/_utils.py:253: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=ResNet50_Weights.IMAGENET1K_V1`. You can also use `weights=ResNet50_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Done (t=0.38s)
+creating index...
+index created!
+Creating data loaders
+Using [0, 0.5, 0.6299605249474365, 0.7937005259840997, 1.0, 1.259921049894873, 1.5874010519681991, 2.0, inf] as bins for aspect ratio quantization
+Count of instances per bin: [  104   982 24236  2332  8225 74466  5763  1158]
+Creating model
+/home/hslee/Desktop/Backbone-Neck_Self-Distillation/FRCN_RetinaNet_FCOS/models/_utils.py:253: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=ResNet50_Weights.IMAGENET1K_V1`. You can also use `weights=ResNet50_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+return_layers: {'layer2': '0', 'layer3': '1', 'layer4': '2'}
+extra_blocks: LastLevelP6P7(
+  (p6): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+  (p7): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+)
+Loading weights from ResNet50_Weights.IMAGENET1K_V1
+return_layers: {'layer2': '0', 'layer3': '1', 'layer4': '2'}
+extra_blocks: LastLevelP6P7(
+  (p6): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+  (p7): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+)
+Start training
+Epoch: [0]  [    0/29316]  eta: 12:07:46  lr: 0.000010  loss: 2.0693 (2.0693)  bbox_regression: 0.6839 (0.6839)  classification: 1.3854 (1.3854)  time: 1.4895  data: 0.4264  max mem: 3637
+Epoch: [0]  [   20/29316]  eta: 2:00:36  lr: 0.000110  loss: 1.9898 (2.0368)  bbox_regression: 0.6861 (0.7290)  classification: 1.2862 (1.3078)  time: 0.1849  data: 0.0044  max mem: 4187
+Epoch: [0]  [   40/29316]  eta: 1:45:21  lr: 0.000210  loss: 1.9565 (2.0142)  bbox_regression: 0.6773 (0.7076)  classification: 1.2763 (1.3066)  time: 0.1833  data: 0.0049  max mem: 4260
+Epoch: [0]  [   60/29316]  eta: 1:39:26  lr: 0.000310  loss: 1.9706 (2.0194)  bbox_regression: 0.6820 (0.7230)  classification: 1.2639 (1.2964)  time: 0.1794  data: 0.0043  max mem: 4260
+Epoch: [0]  [   80/29316]  eta: 1:36:44  lr: 0.000410  loss: 1.9351 (2.0072)  bbox_regression: 0.6770 (0.7155)  classification: 1.2410 (1.2917)  time: 0.1820  data: 0.0050  max mem: 4260
+Epoch: [0]  [  100/29316]  eta: 1:35:01  lr: 0.000509  loss: 1.9787 (2.0075)  bbox_regression: 0.6875 (0.7208)  classification: 1.2722 (1.2867)  time: 0.1814  data: 0.0045  max mem: 4260
+Epoch: [0]  [  120/29316]  eta: 1:33:40  lr: 0.000609  loss: 1.9492 (2.0130)  bbox_regression: 0.6935 (0.7284)  classification: 1.2430 (1.2846)  time: 0.1792  data: 0.0042  max mem: 4260
+Epoch: [0]  [  140/29316]  eta: 1:32:40  lr: 0.000709  loss: 1.9633 (2.0104)  bbox_regression: 0.6608 (0.7224)  classification: 1.2718 (1.2880)  time: 0.1790  data: 0.0040  max mem: 4260
+Epoch: [0]  [  160/29316]  eta: 1:32:17  lr: 0.000809  loss: 1.9365 (2.0058)  bbox_regression: 0.6653 (0.7185)  classification: 1.2645 (1.2873)  time: 0.1854  data: 0.0053  max mem: 4260
+Epoch: [0]  [  180/29316]  eta: 1:31:39  lr: 0.000909  loss: 1.9408 (2.0052)  bbox_regression: 0.6623 (0.7145)  classification: 1.2722 (1.2907)  time: 0.1793  data: 0.0043  max mem: 4260
+Epoch: [0]  [  200/29316]  eta: 1:31:10  lr: 0.001009  loss: 1.9738 (2.0012)  bbox_regression: 0.6572 (0.7107)  classification: 1.2605 (1.2905)  time: 0.1801  data: 0.0045  max mem: 4260
+Epoch: [0]  [  220/29316]  eta: 1:30:54  lr: 0.001109  loss: 1.9171 (1.9967)  bbox_regression: 0.6788 (0.7089)  classification: 1.2385 (1.2878)  time: 0.1830  data: 0.0045  max mem: 4260
+Epoch: [0]  [  240/29316]  eta: 1:30:26  lr: 0.001209  loss: 1.9735 (1.9967)  bbox_regression: 0.6805 (0.7104)  classification: 1.2825 (1.2863)  time: 0.1777  data: 0.0043  max mem: 4260
+Epoch: [0]  [  260/29316]  eta: 1:30:12  lr: 0.001309  loss: 1.9901 (1.9980)  bbox_regression: 0.6791 (0.7094)  classification: 1.3067 (1.2886)  time: 0.1819  data: 0.0039  max mem: 4267
+Epoch: [0]  [  280/29316]  eta: 1:29:53  lr: 0.001409  loss: 1.9703 (1.9966)  bbox_regression: 0.6683 (0.7071)  classification: 1.2556 (1.2895)  time: 0.1791  data: 0.0042  max mem: 4267
+Epoch: [0]  [  300/29316]  eta: 1:29:43  lr: 0.001508  loss: 1.9822 (1.9960)  bbox_regression: 0.6898 (0.7083)  classification: 1.2712 (1.2877)  time: 0.1822  data: 0.0048  max mem: 4267
+Epoch: [0]  [  320/29316]  eta: 1:29:30  lr: 0.001608  loss: 1.9503 (1.9957)  bbox_regression: 0.6736 (0.7080)  classification: 1.2685 (1.2877)  time: 0.1806  data: 0.0048  max mem: 4267
+Epoch: [0]  [  340/29316]  eta: 1:29:22  lr: 0.001708  loss: 1.9163 (1.9923)  bbox_regression: 0.6535 (0.7056)  classification: 1.2568 (1.2868)  time: 0.1827  data: 0.0050  max mem: 4267
+Epoch: [0]  [  360/29316]  eta: 1:29:14  lr: 0.001808  loss: 1.9244 (1.9920)  bbox_regression: 0.6683 (0.7056)  classification: 1.2576 (1.2864)  time: 0.1821  data: 0.0047  max mem: 4267
+Epoch: [0]  [  380/29316]  eta: 1:28:59  lr: 0.001908  loss: 1.9042 (1.9895)  bbox_regression: 0.6626 (0.7039)  classification: 1.2645 (1.2856)  time: 0.1780  data: 0.0044  max mem: 4267
+Epoch: [0]  [  400/29316]  eta: 1:28:51  lr: 0.002008  loss: 1.9302 (1.9884)  bbox_regression: 0.6913 (0.7039)  classification: 1.2430 (1.2845)  time: 0.1811  data: 0.0042  max mem: 4267
+Epoch: [0]  [  420/29316]  eta: 1:28:47  lr: 0.002108  loss: 1.9605 (1.9900)  bbox_regression: 0.6713 (0.7046)  classification: 1.2826 (1.2855)  time: 0.1842  data: 0.0046  max mem: 4267
+Epoch: [0]  [  440/29316]  eta: 1:28:40  lr: 0.002208  loss: 1.9199 (1.9879)  bbox_regression: 0.6666 (0.7039)  classification: 1.2453 (1.2840)  time: 0.1823  data: 0.0046  max mem: 4267
+Epoch: [0]  [  460/29316]  eta: 1:28:34  lr: 0.002308  loss: 1.9379 (1.9872)  bbox_regression: 0.6498 (0.7029)  classification: 1.2837 (1.2843)  time: 0.1822  data: 0.0048  max mem: 4267
+Epoch: [0]  [  480/29316]  eta: 1:28:28  lr: 0.002408  loss: 1.9276 (1.9867)  bbox_regression: 0.6605 (0.7034)  classification: 1.2458 (1.2833)  time: 0.1820  data: 0.0051  max mem: 4267
+Epoch: [0]  [  500/29316]  eta: 1:28:19  lr: 0.002507  loss: 1.9290 (1.9851)  bbox_regression: 0.6615 (0.7025)  classification: 1.2478 (1.2825)  time: 0.1793  data: 0.0046  max mem: 4267
+Epoch: [0]  [  520/29316]  eta: 1:28:14  lr: 0.002607  loss: 1.9235 (1.9841)  bbox_regression: 0.6706 (0.7026)  classification: 1.2396 (1.2815)  time: 0.1830  data: 0.0060  max mem: 4267
+Epoch: [0]  [  540/29316]  eta: 1:28:10  lr: 0.002707  loss: 1.8410 (1.9793)  bbox_regression: 0.6599 (0.7014)  classification: 1.1759 (1.2779)  time: 0.1835  data: 0.0061  max mem: 4267
+Epoch: [0]  [  560/29316]  eta: 1:28:05  lr: 0.002807  loss: 1.8728 (1.9761)  bbox_regression: 0.6500 (0.7007)  classification: 1.1989 (1.2754)  time: 0.1825  data: 0.0048  max mem: 4267
+Epoch: [0]  [  580/29316]  eta: 1:27:57  lr: 0.002907  loss: 1.8370 (1.9719)  bbox_regression: 0.6627 (0.6990)  classification: 1.1619 (1.2729)  time: 0.1795  data: 0.0041  max mem: 4267
+Epoch: [0]  [  600/29316]  eta: 1:27:47  lr: 0.003007  loss: 1.8456 (1.9681)  bbox_regression: 0.6779 (0.6988)  classification: 1.1284 (1.2693)  time: 0.1769  data: 0.0043  max mem: 4267
+Epoch: [0]  [  620/29316]  eta: 1:27:44  lr: 0.003107  loss: 1.7705 (1.9625)  bbox_regression: 0.6337 (0.6977)  classification: 1.1195 (1.2648)  time: 0.1840  data: 0.0049  max mem: 4267
+Epoch: [0]  [  640/29316]  eta: 1:27:42  lr: 0.003207  loss: 1.8274 (1.9586)  bbox_regression: 0.6464 (0.6964)  classification: 1.1839 (1.2621)  time: 0.1858  data: 0.0054  max mem: 4267
+Epoch: [0]  [  660/29316]  eta: 1:27:35  lr: 0.003307  loss: 1.7990 (1.9549)  bbox_regression: 0.6226 (0.6951)  classification: 1.1857 (1.2598)  time: 0.1792  data: 0.0037  max mem: 4267
+Epoch: [0]  [  680/29316]  eta: 1:27:26  lr: 0.003407  loss: 1.8713 (1.9532)  bbox_regression: 0.6557 (0.6944)  classification: 1.1964 (1.2588)  time: 0.1773  data: 0.0042  max mem: 4267
+Epoch: [0]  [  700/29316]  eta: 1:27:20  lr: 0.003506  loss: 1.8538 (1.9502)  bbox_regression: 0.6183 (0.6930)  classification: 1.2213 (1.2572)  time: 0.1807  data: 0.0053  max mem: 4267
+Epoch: [0]  [  720/29316]  eta: 1:27:18  lr: 0.003606  loss: 1.7293 (1.9452)  bbox_regression: 0.6307 (0.6912)  classification: 1.1557 (1.2541)  time: 0.1849  data: 0.0053  max mem: 4267
+Epoch: [0]  [  740/29316]  eta: 1:27:12  lr: 0.003706  loss: 1.6627 (1.9392)  bbox_regression: 0.5995 (0.6894)  classification: 1.0604 (1.2497)  time: 0.1808  data: 0.0050  max mem: 4267
+Epoch: [0]  [  760/29316]  eta: 1:27:08  lr: 0.003806  loss: 1.6791 (1.9348)  bbox_regression: 0.6356 (0.6883)  classification: 1.0195 (1.2465)  time: 0.1817  data: 0.0056  max mem: 4267
+Epoch: [0]  [  780/29316]  eta: 1:27:05  lr: 0.003906  loss: 1.9520 (1.9372)  bbox_regression: 0.6662 (0.6894)  classification: 1.2468 (1.2477)  time: 0.1838  data: 0.0054  max mem: 4267
+Epoch: [0]  [  800/29316]  eta: 1:26:58  lr: 0.004006  loss: 1.9208 (1.9379)  bbox_regression: 0.6481 (0.6888)  classification: 1.2670 (1.2492)  time: 0.1789  data: 0.0045  max mem: 4267
+Epoch: [0]  [  820/29316]  eta: 1:26:54  lr: 0.004106  loss: 1.9072 (1.9382)  bbox_regression: 0.6521 (0.6883)  classification: 1.2414 (1.2498)  time: 0.1825  data: 0.0058  max mem: 4267
+Epoch: [0]  [  840/29316]  eta: 1:26:51  lr: 0.004206  loss: 1.8813 (1.9376)  bbox_regression: 0.6561 (0.6877)  classification: 1.2201 (1.2499)  time: 0.1841  data: 0.0054  max mem: 4267
+Epoch: [0]  [  860/29316]  eta: 1:26:47  lr: 0.004306  loss: 1.9143 (1.9380)  bbox_regression: 0.6413 (0.6874)  classification: 1.2453 (1.2506)  time: 0.1830  data: 0.0050  max mem: 4267
+Epoch: [0]  [  880/29316]  eta: 1:26:41  lr: 0.004406  loss: 1.8828 (1.9375)  bbox_regression: 0.6360 (0.6867)  classification: 1.2264 (1.2508)  time: 0.1795  data: 0.0049  max mem: 4267
+Epoch: [0]  [  900/29316]  eta: 1:26:37  lr: 0.004505  loss: 1.8768 (1.9369)  bbox_regression: 0.6221 (0.6856)  classification: 1.2390 (1.2513)  time: 0.1823  data: 0.0047  max mem: 4267
+Epoch: [0]  [  920/29316]  eta: 1:26:34  lr: 0.004605  loss: 1.8473 (1.9351)  bbox_regression: 0.6137 (0.6841)  classification: 1.2357 (1.2511)  time: 0.1828  data: 0.0053  max mem: 4267
+Epoch: [0]  [  940/29316]  eta: 1:26:28  lr: 0.004705  loss: 1.8707 (1.9346)  bbox_regression: 0.6737 (0.6836)  classification: 1.2022 (1.2510)  time: 0.1804  data: 0.0045  max mem: 4267
+Epoch: [0]  [  960/29316]  eta: 1:26:23  lr: 0.004805  loss: 1.8564 (1.9339)  bbox_regression: 0.6598 (0.6829)  classification: 1.2069 (1.2510)  time: 0.1799  data: 0.0048  max mem: 4267
+Epoch: [0]  [  980/29316]  eta: 1:26:18  lr: 0.004905  loss: 2.0104 (1.9354)  bbox_regression: 0.6787 (0.6832)  classification: 1.3118 (1.2523)  time: 0.1802  data: 0.0053  max mem: 4267
+Epoch: [0]  [ 1000/29316]  eta: 1:26:15  lr: 0.005000  loss: 1.9044 (1.9351)  bbox_regression: 0.6435 (0.6827)  classification: 1.2377 (1.2524)  time: 0.1834  data: 0.0060  max mem: 4267
+Epoch: [0]  [ 1020/29316]  eta: 1:26:13  lr: 0.005000  loss: 1.8824 (1.9346)  bbox_regression: 0.6401 (0.6821)  classification: 1.2496 (1.2525)  time: 0.1864  data: 0.0055  max mem: 4301
+Epoch: [0]  [ 1040/29316]  eta: 1:26:09  lr: 0.005000  loss: 1.8986 (1.9341)  bbox_regression: 0.6582 (0.6819)  classification: 1.2323 (1.2522)  time: 0.1825  data: 0.0050  max mem: 4301
+Epoch: [0]  [ 1060/29316]  eta: 1:26:04  lr: 0.005000  loss: 1.9478 (1.9353)  bbox_regression: 0.6819 (0.6820)  classification: 1.2647 (1.2533)  time: 0.1795  data: 0.0039  max mem: 4301
+Epoch: [0]  [ 1080/29316]  eta: 1:25:59  lr: 0.005000  loss: 1.8555 (1.9345)  bbox_regression: 0.6351 (0.6815)  classification: 1.2211 (1.2531)  time: 0.1808  data: 0.0044  max mem: 4301
+Epoch: [0]  [ 1100/29316]  eta: 1:25:55  lr: 0.005000  loss: 1.9003 (1.9349)  bbox_regression: 0.6489 (0.6813)  classification: 1.2554 (1.2537)  time: 0.1814  data: 0.0052  max mem: 4301
+Epoch: [0]  [ 1120/29316]  eta: 1:25:50  lr: 0.005000  loss: 1.8906 (1.9351)  bbox_regression: 0.6522 (0.6812)  classification: 1.2349 (1.2540)  time: 0.1812  data: 0.0064  max mem: 4301
+Epoch: [0]  [ 1140/29316]  eta: 1:25:49  lr: 0.005000  loss: 1.8690 (1.9345)  bbox_regression: 0.6604 (0.6808)  classification: 1.2160 (1.2537)  time: 0.1869  data: 0.0055  max mem: 4301
+Epoch: [0]  [ 1160/29316]  eta: 1:25:44  lr: 0.005000  loss: 1.9039 (1.9344)  bbox_regression: 0.6454 (0.6808)  classification: 1.2057 (1.2535)  time: 0.1801  data: 0.0047  max mem: 4301
+Epoch: [0]  [ 1180/29316]  eta: 1:25:38  lr: 0.005000  loss: 1.7762 (1.9320)  bbox_regression: 0.6493 (0.6802)  classification: 1.1464 (1.2518)  time: 0.1780  data: 0.0052  max mem: 4301
+Epoch: [0]  [ 1200/29316]  eta: 1:25:34  lr: 0.005000  loss: 1.8222 (1.9300)  bbox_regression: 0.6467 (0.6798)  classification: 1.1635 (1.2502)  time: 0.1814  data: 0.0050  max mem: 4301
+Epoch: [0]  [ 1220/29316]  eta: 1:25:29  lr: 0.005000  loss: 1.8708 (1.9309)  bbox_regression: 0.6585 (0.6802)  classification: 1.1883 (1.2507)  time: 0.1814  data: 0.0050  max mem: 4301
+Epoch: [0]  [ 1240/29316]  eta: 1:25:26  lr: 0.005000  loss: 1.8466 (1.9299)  bbox_regression: 0.6505 (0.6800)  classification: 1.1925 (1.2499)  time: 0.1827  data: 0.0058  max mem: 4301
+Epoch: [0]  [ 1260/29316]  eta: 1:25:23  lr: 0.005000  loss: 1.8353 (1.9287)  bbox_regression: 0.6659 (0.6798)  classification: 1.1853 (1.2489)  time: 0.1833  data: 0.0053  max mem: 4301
+Epoch: [0]  [ 1280/29316]  eta: 1:25:18  lr: 0.005000  loss: 1.8322 (1.9279)  bbox_regression: 0.6574 (0.6800)  classification: 1.1824 (1.2479)  time: 0.1807  data: 0.0049  max mem: 4301
+Epoch: [0]  [ 1300/29316]  eta: 1:25:14  lr: 0.005000  loss: 1.8519 (1.9273)  bbox_regression: 0.6624 (0.6804)  classification: 1.1721 (1.2469)  time: 0.1824  data: 0.0047  max mem: 4301
+Epoch: [0]  [ 1320/29316]  eta: 1:25:10  lr: 0.005000  loss: 1.8066 (1.9256)  bbox_regression: 0.6532 (0.6799)  classification: 1.1587 (1.2457)  time: 0.1813  data: 0.0044  max mem: 4301
+Epoch: [0]  [ 1340/29316]  eta: 1:25:06  lr: 0.005000  loss: 1.7949 (1.9243)  bbox_regression: 0.6387 (0.6799)  classification: 1.1641 (1.2444)  time: 0.1817  data: 0.0045  max mem: 4301
+Epoch: [0]  [ 1360/29316]  eta: 1:25:01  lr: 0.005000  loss: 1.8525 (1.9232)  bbox_regression: 0.6909 (0.6800)  classification: 1.1559 (1.2432)  time: 0.1794  data: 0.0044  max mem: 4301
+Epoch: [0]  [ 1380/29316]  eta: 1:24:56  lr: 0.005000  loss: 1.7967 (1.9218)  bbox_regression: 0.6502 (0.6798)  classification: 1.1596 (1.2420)  time: 0.1792  data: 0.0041  max mem: 4301
