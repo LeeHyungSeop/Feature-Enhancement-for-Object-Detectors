@@ -65,8 +65,7 @@ torchrun --nproc_per_node=1 tools/train.py -c configs/rtdetr/rtdetr_r50vd_6x_coc
     
 export CUDA_VISIBLE_DEVICES=0,1
 torchrun --nproc_per_node=2 tools/train.py -c configs/rtdetr/rtdetr_r50vd_6x_coco.yml \
-    --resume "/home/hslee/Backbone-Neck-Self-Distillation/RT-DETR/output/original_swinT/checkpoint.pth" \
-    2>&1 | tee -a ./output/original_swinT/train_log.txt
+    2>&1 | tee ./outputs/S2_S4_Reg/train_log.txt
 
 # train
 export CUDA_VISIBLE_DEVICES=0

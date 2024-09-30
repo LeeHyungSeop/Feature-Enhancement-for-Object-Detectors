@@ -13,42 +13,12 @@ from typing import Iterable
 
 import torch
 import torch.amp 
-import torch.nn as nn
-import torch.nn.functional as F
 
 from src.data import CocoEvaluator
 from src.misc import (MetricLogger, SmoothedValue, reduce_dict)
 
-torch.autograd.set_detect_anomaly(True)
 
-def js_divergence(p, q):
-    """
-    Compute the Jensen-Shannon Divergence between two probability distributions.
-    """
-    m = 0.5 * (p + q)
-    return 0.5 * (F.kl_div(p.log(), m, reduction='batchmean') + F.kl_div(q.log(), m, reduction='batchmean'))
-
-def compute_js_distance(tensor1, tensor2):
-    """
-    Compute the Jensen-Shannon distance between two tensors.
-    """
-    # Reshape tensors to 2D
-    tensor1 = tensor1.view(tensor1.size(0), -1)
-    tensor2 = tensor2.view(tensor2.size(0), -1)
-
-    # Convert tensors to probability distributions
-    p = F.softmax(tensor1, dim=1)
-    q = F.softmax(tensor2, dim=1)
-
-    # Compute the JS divergence
-    js_div = js_divergence(p, q)
-
-    # Convert divergence to distance
-    js_distance = torch.sqrt(js_div)
-    return js_distance
-
-
-def train_one_epoch_twoBackward(model: torch.nn.Module, criterion: torch.nn.Module,
+def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
                     data_loader: Iterable, optimizer: torch.optim.Optimizer,
                     device: torch.device, epoch: int, max_norm: float = 0, **kwargs):
     model.train()
@@ -85,207 +55,53 @@ def train_one_epoch_twoBackward(model: torch.nn.Module, criterion: torch.nn.Modu
             optimizer.zero_grad()
 
         else:
+            outputs = model(samples, targets)
+            loss_dict = criterion(outputs, targets)
             
-            # 2024.08.01 @hslee KL-Div (forward-backward, forward-backward, update)
-            
-            optimizer.zero_grad()
-            # 0.5, 0.7, 0.9
-            alpha = 0.5 # wneck : weight to alpha, w/o neck : weight to (1 - alpha)
-            T = 4.0
-             
-            wNeck = True
-            outputs_w_neck = model(samples, targets, wNeck=wNeck)
-            backbone_outs = outputs_w_neck.pop('backbone_outs') 
-            neck_outs = outputs_w_neck.pop('neck_outs')
-            
-            loss_w_neck_dict = criterion(outputs_w_neck, targets)
-            loss_w_neck = sum(loss_w_neck_dict.values())
-            loss_w_neck = alpha * loss_w_neck
-
-            loss_w_neck.backward(retain_graph=True)
-            
-
-            wNeck = False
-            outputs_wo_neck = model(samples, targets, wNeck=wNeck)
-            loss_wo_neck_dict = criterion(outputs_wo_neck, targets)
-            loss_wo_neck = sum(loss_wo_neck_dict.values())
-            
-            loss_nb_kd = 0
-            num_scales = len(neck_outs)
-            kl_div = nn.KLDivLoss(reduction='batchmean')
-            
-            # KL-Div [bs, c*h*w]
-            for i in range(num_scales):
-                # make [bs, c, h, w] -> [bs, c*h*w] -> make probability distribution by softmax
-                student = backbone_outs[i].reshape(backbone_outs[i].shape[0], -1)
-                student = F.log_softmax(student / T, dim=1)
-                teacher = neck_outs[i].reshape(neck_outs[i].shape[0], -1)
-                teacher = F.softmax(teacher / T, dim=1)
-                
-                # N -> B KL-Div
-                loss_nb_kd += kl_div(student, teacher) * (T * T)
-            loss_nb_kd /= num_scales
-            
-            loss_wo_neck = (1 - alpha) * loss_wo_neck + loss_nb_kd.item()
-            try:
-                loss_wo_neck.backward()
-            except RuntimeError as err:
-                print(err)                    
-            
-            optimizer.step()
-            
-            if max_norm > 0:
-                torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm)
-
-        
-        # ema 
-        if ema is not None:
-            ema.update(model)
-
-        loss_dict_w_neck_reduced = reduce_dict(loss_w_neck_dict)
-        loss_dict_wo_neck_reduced = reduce_dict(loss_wo_neck_dict)
-        
-        loss_value_w_neck = sum(loss_dict_w_neck_reduced.values())
-        loss_value_wo_neck = sum(loss_dict_wo_neck_reduced.values())
-        
-        loss_value = alpha * loss_value_w_neck + (1 - alpha) * loss_value_wo_neck + loss_nb_kd
-
-        if not math.isfinite(loss_value_w_neck):
-            print("Loss is {}, stopping training".format(loss_value_w_neck))
-            print(loss_dict_w_neck_reduced)
-            sys.exit(1)
-        if not math.isfinite(loss_value_wo_neck):
-            print("Loss is {}, stopping training".format(loss_value_wo_neck))
-            print(loss_dict_wo_neck_reduced)
-            sys.exit(1)
-
-        
-        metric_logger.update(loss=loss_value)
-        # 2024.08.03 @hslee No KD Loss
-        metric_logger.update(KL=loss_nb_kd)
-        metric_logger.update(loss_w_neck=loss_value_w_neck, **loss_dict_w_neck_reduced)
-        metric_logger.update(loss_wo_neck=loss_value_wo_neck, **loss_dict_wo_neck_reduced)
-        metric_logger.update(lr=optimizer.param_groups[0]["lr"])
-
-    # gather the stats from all processes
-    metric_logger.synchronize_between_processes()
-    print("Averaged stats:", metric_logger)
-    return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
-
-
-def train_one_epoch_oneBackward(model: torch.nn.Module, criterion: torch.nn.Module,
-                    data_loader: Iterable, optimizer: torch.optim.Optimizer,
-                    device: torch.device, epoch: int, max_norm: float = 0, **kwargs):
-    model.train()
-    criterion.train()
-    metric_logger = MetricLogger(delimiter="  ")
-    metric_logger.add_meter('lr', SmoothedValue(window_size=1, fmt='{value:.6f}'))
-    # metric_logger.add_meter('class_error', SmoothedValue(window_size=1, fmt='{value:.2f}'))
-    header = 'Epoch: [{}]'.format(epoch)
-    print_freq = kwargs.get('print_freq', 10)
-    
-    ema = kwargs.get('ema', None)
-    scaler = kwargs.get('scaler', None)
-
-    for samples, targets in metric_logger.log_every(data_loader, print_freq, header):
-        samples = samples.to(device)
-        targets = [{k: v.to(device) for k, v in t.items()} for t in targets]
-
-        if scaler is not None:
-            with torch.autocast(device_type=str(device), cache_enabled=True):
-                outputs = model(samples, targets)
-            
-            with torch.autocast(device_type=str(device), enabled=False):
-                loss_dict = criterion(outputs, targets)
-
             loss = sum(loss_dict.values())
-            scaler.scale(loss).backward()
-            
-            if max_norm > 0:
-                scaler.unscale_(optimizer)
-                torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm)
-
-            scaler.step(optimizer)
-            scaler.update()
             optimizer.zero_grad()
-
-        else:
-            
-            optimizer.zero_grad()
-
-            alpha = 0.5 # wneck : weight to alpha, w/o neck : weight to (1 - alpha)
-            T = 4.0
-             
-            wNeck = True
-            outputs_w_neck = model(samples, targets, wNeck=wNeck)
-            loss_w_neck_dict = criterion(outputs_w_neck, targets)
-            loss_w_neck = sum(loss_w_neck_dict.values())
-            
-            # wNeck = False
-            # outputs_wo_neck = model(samples, targets, wNeck=wNeck)
-            # loss_wo_neck_dict = criterion(outputs_wo_neck, targets)
-            # loss_wo_neck = sum(loss_wo_neck_dict.values())
-            
-            # num_scales = len(neck_outs)
-            # kl_div = nn.KLDivLoss(reduction='batchmean')
-            
-            # # KL-Div [bs, c*h*w]
-            # student = student.view(student.shape[0], -1)
-            # student = F.log_softmax(student / T, dim=1)
-            # teacher = teacher.view(teacher.shape[0], -1)
-            # teacher = F.softmax(teacher / T, dim=1)
-            # loss_nb_kd = kl_div(student, teacher) * (T * T)
-            
-            # MSE Loss
-            # loss_nb_kd = F.mse_loss(student, teacher.clone().detach())
-            
-            
-            # for i in range(num_scales):
-            #     # make [bs, c, h, w] -> [bs, c*h*w] -> make probability distribution by softmax
-            #     student = backbone_outs[i].reshape(backbone_outs[i].shape[0], -1).clone()
-            #     student = F.log_softmax(student / T, dim=1)
-            #     teacher = neck_outs[i].reshape(neck_outs[i].shape[0], -1).clone().detach()
-            #     teacher = F.softmax(teacher / T, dim=1)
-            #     # N -> B KL-Div
-            #     loss_nb_kd += kl_div(student, teacher) * (T * T)
-            # loss_nb_kd /= num_scales
-                
-            
-            loss = loss_w_neck
             loss.backward()
+            
+            # 2024.09.30 @hslee
+            low_res_layer = model.module.backbone.res_layers[3]
+            high_res_layer = model.module.backbone.res_layers[1]
+            
+            # L2 regularization for low-resolution layer (layer4)
+            lambda_low = 0.001  # Tuning parameter for low resolution regularization
+            l2_reg = sum(torch.norm(w, p=2) for w in low_res_layer.parameters() if w.grad is not None)
+            loss += lambda_low * l2_reg
+
+            # Maximum variance regularization for high-resolution layer (layer2)
+            lambda_high = 10.0  # Tuning parameter for high resolution regularization
+            high_res_gradients = [param.grad for param in high_res_layer.parameters() if param.grad is not None]
+            
+            # Calculate variance of gradients
+            max_var_reg = sum(torch.var(g) for g in high_res_gradients)  # Ensure the gradients are correctly calculated
+            
+            # encourage the gradients to be sharp
+            loss -= lambda_high * max_var_reg
+            
             optimizer.step()
             
             if max_norm > 0:
                 torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm)
 
+            optimizer.step()
         
         # ema 
         if ema is not None:
             ema.update(model)
 
-        loss_dict_w_neck_reduced = reduce_dict(loss_w_neck_dict)
-        # loss_dict_wo_neck_reduced = reduce_dict(loss_wo_neck_dict)
-        
-        loss_value_w_neck = sum(loss_dict_w_neck_reduced.values())
-        # loss_value_wo_neck = sum(loss_dict_wo_neck_reduced.values())
-        # loss_value = alpha * loss_value_w_neck + (1 - alpha) * loss_value_wo_neck + loss_nb_kd
-        loss_value = loss
+        loss_dict_reduced = reduce_dict(loss_dict)
+        loss_value = sum(loss_dict_reduced.values())
 
-        if not math.isfinite(loss_value_w_neck):
-            print("Loss is {}, stopping training".format(loss_value_w_neck))
-            print(loss_dict_w_neck_reduced)
+        if not math.isfinite(loss_value):
+            print("Loss is {}, stopping training".format(loss_value))
+            print(loss_dict_reduced)
             sys.exit(1)
-        # if not math.isfinite(loss_value_wo_neck):
-        #     print("Loss is {}, stopping training".format(loss_value_wo_neck))
-        #     print(loss_dict_wo_neck_reduced)
-        #     sys.exit(1)
 
-        
-        metric_logger.update(loss=loss_value)
-        # 2024.08.03 @hslee No KD Loss
-        # metric_logger.update(KD_MSE=loss_nb_kd)
-        metric_logger.update(loss_w_neck=loss_value_w_neck, **loss_dict_w_neck_reduced)
-        # metric_logger.update(loss_wo_neck=loss_value_wo_neck, **loss_dict_wo_neck_reduced)
+        metric_logger.update()
+        metric_logger.update(loss=loss_value, **loss_dict_reduced)
         metric_logger.update(lr=optimizer.param_groups[0]["lr"])
 
     # gather the stats from all processes
@@ -296,7 +112,7 @@ def train_one_epoch_oneBackward(model: torch.nn.Module, criterion: torch.nn.Modu
 
 
 @torch.no_grad()
-def evaluate(model: torch.nn.Module, criterion: torch.nn.Module, postprocessors, data_loader, base_ds, device, output_dir, wNeck):
+def evaluate(model: torch.nn.Module, criterion: torch.nn.Module, postprocessors, data_loader, base_ds, device, output_dir):
     model.eval()
     criterion.eval()
 
@@ -324,7 +140,7 @@ def evaluate(model: torch.nn.Module, criterion: torch.nn.Module, postprocessors,
         # with torch.autocast(device_type=str(device)):
         #     outputs = model(samples)
 
-        outputs = model(samples, wNeck=wNeck)
+        outputs = model(samples)
 
         # loss_dict = criterion(outputs, targets)
         # weight_dict = criterion.weight_dict
@@ -391,74 +207,3 @@ def evaluate(model: torch.nn.Module, criterion: torch.nn.Module, postprocessors,
     #     stats['PQ_st'] = panoptic_res["Stuff"]
 
     return stats, coco_evaluator
-
-def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
-                    data_loader: Iterable, optimizer: torch.optim.Optimizer,
-                    device: torch.device, epoch: int, max_norm: float = 0, **kwargs):
-    model.train()
-    criterion.train()
-    metric_logger = MetricLogger(delimiter="  ")
-    metric_logger.add_meter('lr', SmoothedValue(window_size=1, fmt='{value:.6f}'))
-    # metric_logger.add_meter('class_error', SmoothedValue(window_size=1, fmt='{value:.2f}'))
-    header = 'Epoch: [{}]'.format(epoch)
-    print_freq = kwargs.get('print_freq', 10)
-    
-    ema = kwargs.get('ema', None)
-    scaler = kwargs.get('scaler', None)
-
-    for samples, targets in metric_logger.log_every(data_loader, print_freq, header):
-        samples = samples.to(device)
-        targets = [{k: v.to(device) for k, v in t.items()} for t in targets]
-
-        if scaler is not None:
-            with torch.autocast(device_type=str(device), cache_enabled=True):
-                outputs = model(samples, targets)
-            
-            with torch.autocast(device_type=str(device), enabled=False):
-                loss_dict = criterion(outputs, targets)
-
-            loss = sum(loss_dict.values())
-            scaler.scale(loss).backward()
-            
-            if max_norm > 0:
-                scaler.unscale_(optimizer)
-                torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm)
-
-            scaler.step(optimizer)
-            scaler.update()
-            optimizer.zero_grad()
-
-        else:
-            
-            wNeck = True
-            outputs = model(samples, targets, wNeck=wNeck)
-            loss_dict = criterion(outputs, targets)
-            
-            loss = sum(loss_dict.values())
-            optimizer.zero_grad()
-            loss.backward()
-            
-            if max_norm > 0:
-                torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm)
-
-            optimizer.step()
-        
-        # ema 
-        if ema is not None:
-            ema.update(model)
-
-        loss_dict_reduced = reduce_dict(loss_dict)
-        loss_value = sum(loss_dict_reduced.values())
-
-        if not math.isfinite(loss_value):
-            print("Loss is {}, stopping training".format(loss_value))
-            print(loss_dict_reduced)
-            sys.exit(1)
-
-        metric_logger.update(loss=loss_value, **loss_dict_reduced)
-        metric_logger.update(lr=optimizer.param_groups[0]["lr"])
-
-    # gather the stats from all processes
-    metric_logger.synchronize_between_processes()
-    print("Averaged stats:", metric_logger)
-    return {k: meter.global_avg for k, meter in metric_logger.meters.items()}

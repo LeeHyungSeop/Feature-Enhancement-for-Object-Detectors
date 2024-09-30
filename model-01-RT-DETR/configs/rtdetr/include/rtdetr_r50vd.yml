@@ -7,7 +7,6 @@ postprocessor: RTDETRPostProcessor
 
 RTDETR: 
   backbone: PResNet
-  # backbone: SwinTransformer
   encoder: HybridEncoder
   decoder: RTDETRTransformer
   multi_scale: [480, 512, 544, 576, 608, 640, 640, 640, 672, 704, 736, 768, 800]
@@ -21,32 +20,8 @@ PResNet:
   freeze_norm: True
   pretrained: True 
 
-# 2024.06.15 @hslee
-SwinTransformer:
-  num_stages: 4
-  pretrained: True
-
-  # intra
-  hidden_dim: 256
-  use_encoder_idx: [2]
-  num_encoder_layers: 1
-  nhead: 8
-  dim_feedforward: 1024
-  dropout: 0.
-  enc_act: 'gelu'
-  pe_temperature: 10000
-  
-  # cross
-  expansion: 1.0
-  depth_mult: 1
-  act: 'silu'
-
-  # eval
-  eval_spatial_size: [640, 640]
-
 HybridEncoder:
   in_channels: [512, 1024, 2048]
-  # in_channels: [192, 384, 768]
   feat_strides: [8, 16, 32]
 
   # intra
@@ -90,13 +65,8 @@ RTDETRPostProcessor:
 
 
 SetCriterion:
-  # weight_dict: {loss_vfl: 1, loss_bbox: 5, loss_giou: 2}
-  # losses: ['vfl', 'boxes', ]
-
-  # 2024.07.25 @hslee : neck 
-  weight_dict: {loss_vfl: 1, loss_bbox: 5, loss_giou: 2, loss_nb_kd: 1}
-  losses: ['vfl', 'boxes', 'nb_kd', ]
-
+  weight_dict: {loss_vfl: 1, loss_bbox: 5, loss_giou: 2,}
+  losses: ['vfl', 'boxes', ]
   alpha: 0.75
   gamma: 2.0
 
@@ -106,6 +76,3 @@ SetCriterion:
     # use_focal_loss: True 
     alpha: 0.25
     gamma: 2.0
-
-
-
