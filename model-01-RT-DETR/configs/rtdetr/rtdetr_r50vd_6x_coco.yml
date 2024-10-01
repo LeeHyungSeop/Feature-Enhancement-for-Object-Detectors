@@ -1,9 +1,0 @@
-__include__: [
-  '../dataset/coco_detection.yml',
-  '../runtime.yml',
-  './include/dataloader.yml',
-  './include/optimizer.yml',
-  './include/rtdetr_r50vd.yml',
-]
-
-output_dir: ./output/S2_S4_Reg
