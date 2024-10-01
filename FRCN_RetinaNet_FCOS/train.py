@@ -252,7 +252,6 @@ def main(args):
     
     # 2024.08.16 hslee
     # have to modify this part to use new model --------------------------------------------------------------------------------------
-    # if args.model not in 
     if args.model not in models.__dict__.keys():
         print(f"{args.model} is not supported")
         sys.exit()
@@ -390,14 +389,14 @@ To run in a multi-gpu environment, use the distributed launcher::
     --epochs 26 --lr-steps 16 22 --aspect-ratio-group-factor 3)
     
         # ada, pascal (#NGPU=2)
-        torchrun --nproc_per_node=2 train.py\
-        --model fasterrcnn_resnet50_fpn \
-        --dataset coco --data-path=/media/data/coco \
+        torchrun --nproc_per_node=2 train.py \
+        --model my_fasterrcnn_resnet50_fpn \
+        --dataset coco --data-path=/media/data/coco2017 \
         --epochs 26 --lr-steps 16 22 --aspect-ratio-group-factor 3 \
-        --lr 0.005 --batch-size 2 --world-size 2 \
+        --lr 0.005 --batch-size 2 --world-size 2 --amp \
         --weights-backbone ResNet50_Weights.IMAGENET1K_V1 \
-        --output-dir ./outputs/FRCN/baseline \
-        2>&1 | tee ./outputs/FRCN/baseline/baseline_lr005_bs2.txt
+        --output-dir ./outputs/FRCN/Feature_Enhancement \
+        2>&1 | tee ./outputs/FRCN/Feature_Enhancement/train_log.txt
     
         # Desktop
         torchrun --nproc_per_node=1 train.py \
@@ -438,7 +437,7 @@ To run in a multi-gpu environment, use the distributed launcher::
         
         
         torchrun --nproc_per_node=2 train.py \
-        --model my_retinanet_resnet50_fpn \
+        --model my_fasterrcnn_resnet50_fpn \
         --dataset coco --data-path=/media/data/coco \
         --weights-backbone ResNet50_Weights.IMAGENET1K_V1 \
         --resume "/home/hslee/Desktop/Backbone-Neck_Self-Distillation/FRCN_RetinaNet_FCOS/outputs/RetinaNet/s3c_s4o_s5g/checkpoint_model_7.pth" \
@@ -464,12 +463,12 @@ To run in a multi-gpu environment, use the distributed launcher::
 
         # ada(coco), pascal(coco2017)
         torchrun --nproc_per_node=2 train.py \
-        --model my_fcos_resnet50_fpn \
+        --model my_fasterrcnn_resnet50_fpn \
         --dataset coco --data-path=/media/data/coco \
         --epochs 26 --lr-steps 16 22 --aspect-ratio-group-factor 3 \
         --lr 0.005 --batch-size 2 --world-size 2 --amp \
         --weights-backbone ResNet50_Weights.IMAGENET1K_V1 \
-        --output-dir ./outputs/RetinaNet/s3o_s4o_s5g \
-        2>&1 | tee ./outputs/FCOS/s3o_s4o_s5g/train_log.txt
+        --output-dir ./outputs/FRCN/Feature_Enhancement \
+        2>&1 | tee ./outputs/FCOS/Feature_Enhancement/train_log.txt
                 
 '''
