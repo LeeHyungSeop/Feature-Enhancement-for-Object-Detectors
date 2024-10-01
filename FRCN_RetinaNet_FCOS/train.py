@@ -422,7 +422,7 @@ To run in a multi-gpu environment, use the distributed launcher::
         --epochs 26 --lr-steps 16 22 --aspect-ratio-group-factor 3 \
         --lr 0.005 --batch-size 2 --world-size 2 \
         --weights-backbone ResNet50_Weights.IMAGENET1K_V1 \
-        --output-dir ./outputs/RetinaNet/s3o_s4g_s5g \
+        --output-dir ./outputs/RetinaNet \
         2>&1 | tee ./outputs/RetinaNet/test.txt
         
         # Desktop
