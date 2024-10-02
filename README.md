@@ -44,7 +44,7 @@ This is the official implementation of Paper Feature Enhancement for Object Dete
 <details>
   <summary>Training</summary>
   To train RetinaNet with Feature-Enhancement, run the following command:
-  </br>(If the number of GPUs used is different, the learning rate should be adjusted accordingly. Refer to the PyTorch Detection Training in [train.py](https://github.com/LeeHyungSeop/Feature-Enhancement-for-Object-Detectors/blob/main/%08RetinaNet/train.py) for details.)
+  </br>If the number of GPUs used is different, the learning rate should be adjusted accordingly. Refer to the PyTorch Detection Training in [train.py](https://github.com/LeeHyungSeop/Feature-Enhancement-for-Object-Detectors/blob/main/RetinaNet/train.py) for details.
 
   ```
   torchrun --nproc_per_node=2 train.py \
