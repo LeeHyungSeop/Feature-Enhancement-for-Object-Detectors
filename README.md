@@ -22,7 +22,7 @@ This is the official implementation of Paper Feature Enhancement for Object Dete
 
 <details>
   <summary>Data Preparation</summary>
-  Download COCO train and val images from [https://cocodataset.org](https://cocodataset.org)
+  Download COCO train and val images from https://cocodataset.org
   We expect the directory structure to be as follows:
   
   ``` 
@@ -44,7 +44,7 @@ This is the official implementation of Paper Feature Enhancement for Object Dete
 <details>
   <summary>Training</summary>
   To train RetinaNet with Feature-Enhancement, run the following command:
-  </br>(To run in a multi-gpu environment(not 2), use the PyTorch Detection Training in [train.py](https://github.com/LeeHyungSeop/Feature-Enhancement-for-Object-Detectors/blob/main/%08RetinaNet/train.py)) 
+  </br>(To run in a multi-gpu environment(not 2), use the PyTorch Detection Training in [train.py](https://github.com/LeeHyungSeop/Feature-Enhancement-for-Object-Detectors/blob/main/%08RetinaNet/train.py) ) 
 
   ```
   torchrun --nproc_per_node=2 train.py \
@@ -57,18 +57,11 @@ This is the official implementation of Paper Feature Enhancement for Object Dete
 </details>
 
 <details>
-  <summary>Training</summary>
-  To train RetinaNet with Feature-Enhancement, run the following command:
-  </br>(To run in a multi-gpu environment(not 2), use the PyTorch Detection Training in [train.py](https://github.com/LeeHyungSeop/Feature-Enhancement-for-Object-Detectors/blob/main/%08RetinaNet/train.py)) 
-
-  ```
-  torchrun --nproc_per_node=2 train.py \
-  --dataset coco --data-path=<path to coco> --model my_retinanet_resnet50_fpn \
-  --epochs 26 --lr-steps 16 22 --aspect-ratio-group-factor 3 \
-  --lr 0.005 --batch-size 2 --world-size 2 \
-  --weights-backbone ResNet50_Weights.IMAGENET1K_V1 \
-  --output-dir <checkpoint directory>
-  ```
+  <summary>Evaluation</summary>
+    To evaluate the pretrained model, run the following command:
+    ```
+    python eval.py --dataset coco --data-path=<path to coco> --model my_retinanet_resnet50_fpn \
+    ```
 </details>
 
 
