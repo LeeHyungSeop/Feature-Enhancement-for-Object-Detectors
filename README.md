@@ -58,10 +58,13 @@ This is the official implementation of Paper Feature Enhancement for Object Dete
 
 <details>
   <summary>Evaluation</summary>
-    To evaluate the pretrained model, run the following command:
-    ```
-    python eval.py --dataset coco --data-path=<path to coco> --model my_retinanet_resnet50_fpn \
-    ```
+  To evaluate the pretrained RetinaNet, run the following command:
+  
+  ```
+  python train.py --test-only \
+  --dataset coco --data-path=/media/data/coco --model my_retinanet_resnet50_fpn \
+  --weights-path <weights file> 
+  ```
 </details>
 
 
