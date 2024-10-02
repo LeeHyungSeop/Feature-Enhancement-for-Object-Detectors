@@ -68,17 +68,18 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq, sc
         else:
             losses.backward()
 
+            # 2024.10.01 @hslee : A New Training Method for Feature Enhancement in Object Detectors
             # L2 regularization for low-resolution layer (layer4)
             lambda_low = 1e-03  # Tuning parameter for low resolution regularization
             l2_reg = sum(torch.norm(w, p=2) for w in low_res_layer.parameters() if w.grad is not None)
 
             # Maximum variance regularization for high-resolution layer (layer2)
-            lambda_high = 1000.0  # Tuning parameter for high resolution regularization
-            high_res_gradients = [param.grad for param in high_res_layer.parameters() if param.grad is not None]
-            max_var_reg = sum(torch.var(g) for g in high_res_gradients)  # Variance of gradients
+            lambda_high = 10  # Tuning parameter for high resolution regularization
+            max_var_reg = sum(torch.var(w) for w in high_res_layer.parameters() if w.grad is not None)
             
-            print(f"lambda_low * l2_reg : {lambda_low * l2_reg}")
-            print(f"lambda_high * max_var_reg : {lambda_high * max_var_reg}")
+            # print(f"lambda_low * l2_reg : {lambda_low * l2_reg}")
+            # print(f"lambda_high * max_var_reg : {lambda_high * max_var_reg}")
+            
             # Subtract to encourage maximum variance
             losses = losses + lambda_low * l2_reg + lambda_high * max_var_reg
             
