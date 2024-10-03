@@ -76,8 +76,11 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq, sc
             # Maximum variance regularization for high-resolution layer (layer2)
             lambda_high = 10  # Tuning parameter for high resolution regularization
             
+            # 1
             # max_var_reg = sum(torch.var(w) for w in high_res_layer.parameters() if w.grad is not None)
-            max_var_reg = 
+            
+            # 2.
+            # max_var_reg = sum(torch.var(w) for w in high_res_layer.parameters() if w.grad is not None)
             
             # print(f"lambda_low * l2_reg : {lambda_low * l2_reg}")
             # print(f"lambda_high * max_var_reg : {lambda_high * max_var_reg}")
