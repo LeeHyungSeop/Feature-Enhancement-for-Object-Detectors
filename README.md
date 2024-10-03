@@ -62,8 +62,8 @@ This is the official implementation of Paper Feature Enhancement for Object Dete
   
   ```
   python train.py --test-only \
-  --dataset coco --data-path=/media/data/coco --model my_retinanet_resnet50_fpn \
-  --weights-path <weights file> 
+  --dataset coco --data-path=<path to coco> --model my_retinanet_resnet50_fpn \
+  --weights-path <weights file> --batch-size 16
   ```
 </details>
 
