@@ -80,10 +80,11 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq, sc
             # max_var_reg = sum(torch.var(w) for w in high_res_layer.parameters() if w.grad is not None)
             
             # 2.
-            # max_var_reg = sum(torch.var(w) for w in high_res_layer.parameters() if w.grad is not None)
+            high_res_gradients = [param.grad for param in high_res_layer.parameters() if param.grad is not None]
+            max_var_reg = sum(torch.var(g) for g in high_res_gradients)  # Ensure the gradients are correctly calculated
             
-            # print(f"lambda_low * l2_reg : {lambda_low * l2_reg}")
-            # print(f"lambda_high * max_var_reg : {lambda_high * max_var_reg}")
+            print(f"lambda_low * l2_reg : {lambda_low * l2_reg}")
+            print(f"lambda_high * max_var_reg : {lambda_high * max_var_reg}")
             
             # Subtract to encourage maximum variance
             losses = losses + lambda_low * l2_reg + lambda_high * max_var_reg
