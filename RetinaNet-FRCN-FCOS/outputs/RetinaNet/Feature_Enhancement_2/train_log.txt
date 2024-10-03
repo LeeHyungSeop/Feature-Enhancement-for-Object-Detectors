@@ -1,0 +1,41 @@
+WARNING:torch.distributed.run:
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************
+| distributed init (rank 1): env://
+| distributed init (rank 0): env://
+Namespace(data_path='/media/data/coco2017', weights_path=None, dataset='coco', model='my_retinanet_resnet50_fpn', device='cuda', batch_size=2, epochs=26, workers=4, opt='sgd', lr=0.005, momentum=0.9, weight_decay=0.0001, norm_weight_decay=None, lr_scheduler='multisteplr', lr_step_size=8, lr_steps=[16, 22], lr_gamma=0.1, print_freq=20, output_dir='./outputs/RetinaNet/Feature_Enhancement_2', resume='', start_epoch=0, aspect_ratio_group_factor=3, rpn_score_thresh=None, trainable_backbone_layers=None, data_augmentation='hflip', sync_bn=False, test_only=False, use_deterministic_algorithms=False, world_size=2, dist_url='env://', weights=None, weights_backbone='ResNet50_Weights.IMAGENET1K_V1', amp=False, use_copypaste=False, backend='pil', use_v2=False, rank=0, gpu=0, distributed=True, dist_backend='nccl')
+Loading data
+root:  /media/data/coco2017
+img_folder:  train2017
+loading annotations into memory...
+Done (t=8.65s)
+creating index...
+index created!
+root:  /media/data/coco2017
+img_folder:  val2017
+loading annotations into memory...
+/home/hslee/Feature_Enhancement/RetinaNet-FRCN-FCOS/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=ResNet50_Weights.IMAGENET1K_V1`. You can also use `weights=ResNet50_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+Done (t=0.21s)
+creating index...
+index created!
+Creating data loaders
+Using [0, 0.5, 0.6299605249474365, 0.7937005259840997, 1.0, 1.259921049894873, 1.5874010519681991, 2.0, inf] as bins for aspect ratio quantization
+Count of instances per bin: [  104   982 24236  2332  8225 74466  5763  1158]
+Creating model
+/home/hslee/Feature_Enhancement/RetinaNet-FRCN-FCOS/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=ResNet50_Weights.IMAGENET1K_V1`. You can also use `weights=ResNet50_Weights.DEFAULT` to get the most up-to-date weights.
+  warnings.warn(msg)
+extra_blocks: LastLevelP6P7(
+  (p6): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+  (p7): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+)
+Loading weights from ResNet50_Weights.IMAGENET1K_V1
+extra_blocks: LastLevelP6P7(
+  (p6): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+  (p7): Conv2d(256, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+)
+Start training
+Epoch: [0]  [    0/29316]  eta: 10:26:44  lr: 0.000010  loss: 2.1002 (2.1002)  bbox_regression: 0.6815 (0.6815)  classification: 1.4187 (1.4187)  time: 1.2827  data: 0.3937  max mem: 3081
+Epoch: [0]  [   20/29316]  eta: 1:37:41  lr: 0.000110  loss: 1.9949 (2.0378)  bbox_regression: 0.6871 (0.7279)  classification: 1.2879 (1.3098)  time: 0.1459  data: 0.0033  max mem: 3771
+Epoch: [0]  [   40/29316]  eta: 1:25:13  lr: 0.000210  loss: 1.9553 (2.0140)  bbox_regression: 0.6768 (0.7073)  classification: 1.2758 (1.3067)  time: 0.1480  data: 0.0034  max mem: 3771

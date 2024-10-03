@@ -58,7 +58,17 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq, sc
         # Get references to the model layers
         low_res_layer = model.module.backbone.body.layer4  # Low resolution (layer4)
         high_res_layer = model.module.backbone.body.layer2  # High resolution (layer2)
-
+        
+        lambda_low = 1e-03  # Tuning parameter for low resolution regularization
+        l2_reg = sum(torch.norm(w, p=2) for w in low_res_layer.parameters() if w.grad is not None)
+        
+        lambda_high = 10  # Tuning parameter for high resolution regularization
+        max_var_reg = sum(torch.var(w) for w in high_res_layer.parameters() if w.grad is not None)
+        
+        losses = losses + lambda_low * l2_reg + lambda_high * max_var_reg
+        
+        # print(f"lambda_low * l2_reg : {lambda_low * l2_reg}")
+        # print(f"lambda_high * max_var_reg : {lambda_high * max_var_reg}")
 
         optimizer.zero_grad()
         if scaler is not None:
@@ -67,29 +77,6 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq, sc
             scaler.update()
         else:
             losses.backward()
-
-            # 2024.10.01 @hslee : A New Training Method for Feature Enhancement in Object Detectors
-            # L2 regularization for low-resolution layer (layer4)
-            lambda_low = 1e-03  # Tuning parameter for low resolution regularization
-            l2_reg = sum(torch.norm(w, p=2) for w in low_res_layer.parameters() if w.grad is not None)
-
-            # Maximum variance regularization for high-resolution layer (layer2)
-            lambda_high = 10  # Tuning parameter for high resolution regularization
-            
-            # 1
-            # max_var_reg = sum(torch.var(w) for w in high_res_layer.parameters() if w.grad is not None)
-            
-            # 2.
-            high_res_gradients = [param.grad for param in high_res_layer.parameters() if param.grad is not None]
-            max_var_reg = sum(torch.var(g) for g in high_res_gradients)  # Ensure the gradients are correctly calculated
-            
-            print(f"lambda_low * l2_reg : {lambda_low * l2_reg}")
-            print(f"lambda_high * max_var_reg : {lambda_high * max_var_reg}")
-            
-            # Subtract to encourage maximum variance
-            losses = losses + lambda_low * l2_reg + lambda_high * max_var_reg
-            
-            
             optimizer.step()
 
         if lr_scheduler is not None:
