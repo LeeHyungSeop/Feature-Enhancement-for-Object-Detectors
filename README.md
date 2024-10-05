@@ -44,7 +44,7 @@ This is the official implementation of Paper "Hierarchical Feature Enhancement f
 <details>
   <summary>Training</summary>
   To train RetinaNet with Feature-Enhancement, run the following command:
-  </br>(If the number of GPUs used is different, the learning rate should be adjusted accordingly. Refer to the PyTorch Detection Training in <a href="https://github.com/LeeHyungSeop/Feature-Enhancement-for-Object-Detectors/blob/main/RetinaNet/train.py">train.py</a> for details.)
+  </br>(If the number of GPUs used is different, the learning rate should be adjusted accordingly. Refer to the PyTorch Detection Training in <a href="https://github.com/LeeHyungSeop/Hierarchical-Feature-Enhancement-for-Object-Detectors/blob/main/RetinaNet-FRCN-FCOS/train.py">train.py</a> for details.)
 
   ```
   torchrun --nproc_per_node=2 train.py \
@@ -74,7 +74,7 @@ Please use the following BibTeX entries:
 
 ``` bibtex
 @article{,
-  title={Feature-Enhancement-for-Object-Detectors},
+  title={Hierarchical-Feature-Enhancement-for-Object-Detectors},
   author={},
   journal={},
   year={2024},
