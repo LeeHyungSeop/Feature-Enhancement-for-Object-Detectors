@@ -8,6 +8,11 @@ This is the official implementation of Paper "Hierarchical Feature Enhancement f
 * (b) : The later stage of the backbone is trained to blur small features, like a Gaussian filter, and focus more on detecting larger features.
 * (c) : The new training method leads to an increase in AP (Average Precision) for both large and small objects.
 
+## Main result 
+
+* Our proposed method improves the performance of RetinaNet by 1.0 AP on Large objects and 0.5 AP on Small objects.
+![no msg](./Figure/Table-1.png)
+
 
 ## Training and Evaluation on COCO
 
