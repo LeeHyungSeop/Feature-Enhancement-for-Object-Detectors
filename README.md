@@ -1,6 +1,6 @@
 # Hierarchical Feature Enhancement for Object Detectors
 
-This is the official implementation of Paper Feature Enhancement for Object Detectors.
+This is the official implementation of Paper "Hierarchical Feature Enhancement for Object Detectors".
 
 ![no msg](./Figure/README-main.png)
 
