@@ -1,4 +1,4 @@
-# Feature-Enhancement-for-Object-Detectors
+# Hierarchical Feature Enhancement for Object Detectors
 
 This is the official implementation of Paper Feature Enhancement for Object Detectors.
 

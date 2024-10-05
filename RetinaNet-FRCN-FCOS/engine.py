@@ -67,8 +67,8 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq, sc
             sys.exit(1)
 
         # Get references to the model layers
-        lambda_l2 = 1e-5
-        lambda_var = 1e-5
+        lambda_l2 = 1e-5   # 1e-5 for RetinaNet, 1e-5 for FRCN
+        lambda_var = 1     # 1e-5 for RetinaNet, 1 for FRCN
         
         low_res_layer = model.module.backbone.body.layer4  # Low resolution (layer4)
         high_res_layer = model.module.backbone.body.layer2  # High resolution (layer2)
