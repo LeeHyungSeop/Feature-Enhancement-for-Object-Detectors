@@ -9,6 +9,17 @@ import utils
 from coco_eval import CocoEvaluator
 from coco_utils import get_coco_api_from_dataset
 
+def l2_regularization(layer, lambda_l2):
+    l2_reg_loss = 0
+    for param in layer.parameters():
+        l2_reg_loss += torch.norm(param, 2)
+    return lambda_l2 * l2_reg_loss
+
+def max_variance_regularization(layer, lambda_var):
+    var_reg_loss = 0
+    for param in layer.parameters():
+        var_reg_loss += torch.var(param)
+    return lambda_var * var_reg_loss
 
 def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq, scaler=None):
     model.train()
@@ -56,20 +67,21 @@ def train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq, sc
             sys.exit(1)
 
         # Get references to the model layers
+        lambda_l2 = 1e-5
+        lambda_var = 1e-5
+        
         low_res_layer = model.module.backbone.body.layer4  # Low resolution (layer4)
         high_res_layer = model.module.backbone.body.layer2  # High resolution (layer2)
         
-        lambda_low = 1e-03  # Tuning parameter for low resolution regularization
-        l2_reg = sum(torch.norm(w, p=2) for w in low_res_layer.parameters() if w.grad is not None)
+        l2_reg_loss = l2_regularization(low_res_layer, lambda_l2)
+        var_reg_loss = max_variance_regularization(high_res_layer, lambda_var)
         
-        lambda_high = 10  # Tuning parameter for high resolution regularization
-        max_var_reg = sum(torch.var(w) for w in high_res_layer.parameters() if w.grad is not None)
+        # print(f"l2_reg_loss : {l2_reg_loss}")
+        # print(f"var_reg_loss : {var_reg_loss}")
         
-        losses = losses + lambda_low * l2_reg + lambda_high * max_var_reg
+        # Add the regularization loss to the total loss
+        losses = losses + l2_reg_loss - var_reg_loss
         
-        # print(f"lambda_low * l2_reg : {lambda_low * l2_reg}")
-        # print(f"lambda_high * max_var_reg : {lambda_high * max_var_reg}")
-
         optimizer.zero_grad()
         if scaler is not None:
             scaler.scale(losses).backward()
